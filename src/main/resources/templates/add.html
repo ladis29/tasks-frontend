@@ -2,8 +2,8 @@
 
 <head>
 	<title>Tasks</title>
-	<link rel="stylesheet" href="/css/bootstrap.min.css">
-	<script src="/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="/tasks/css/bootstrap.min.css">
+	<script src="/tasks/js/bootstrap.min.js"></script>
 </head>
 
 <body class="bg-light">
@@ -13,8 +13,7 @@
 			<p class="lead">A very simple task management tool</p>
 		</div>
 		<p class="alert alert-danger" role="alert" th:if="${error != null}" th:text="${error}" id="message" />
-		<form action="/save" method="post" th:object="${todo}">
-			<input type="hidden" th:field="*{id}" class="form-control" id="id">
+		<form action="save" method="post" th:object="${todo}">
 			<div class="form-group row">
 				<label class="col-sm-2 col-form-label">Task:</label>
 				<div class="col-sm-10">
@@ -31,7 +30,7 @@
 		</form>
 	</div>
 	<footer class="my-5 pt-5 text-muted text-center text-small border-top">
-		<p class="mb-1">&copy; 2020 Wcaquino's Pact Course</p>
+		<p class="mb-1">&copy; 2020 Wcaquino's DevOps Course</p>
 		<ul class="list-inline">
 			<li class="list-inline-item"><a href="https://wcaquino.me" target="blank">More</a></li>
 		</ul>

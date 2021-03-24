@@ -23,6 +23,9 @@ public class TasksController {
 	@Value("${backend.port}")
 	private String BACKEND_PORT;
 	
+	@Value("${app.version}")
+	private String VERSION;
+	
 	public String getBackendURL() {
 		return "http://" + BACKEND_HOST + ":" + BACKEND_PORT;
 	}
@@ -30,6 +33,8 @@ public class TasksController {
 	@GetMapping("")
 	public String index(Model model) {
 		model.addAttribute("todos", getTodos());
+		if(VERSION.startsWith("build"))
+			model.addAttribute("version", VERSION);
 		return "index";
 	}
 	
@@ -43,13 +48,9 @@ public class TasksController {
 	public String save(Todo todo, Model model) {
 		try {
 			RestTemplate restTemplate = new RestTemplate();
-			if(todo.getId() == null) {
-				restTemplate.postForObject(
-						getBackendURL() + "/todo", todo, Object.class);				
-			} else {
-				restTemplate.put(getBackendURL() + "/todo/" + todo.getId(), todo);
-			}
-			model.addAttribute("sucess", "Sucess!");
+			restTemplate.postForObject(
+					getBackendURL() + "/tasks-backend/todo", todo, Object.class);			
+			model.addAttribute("success", "Success!");
 			return "index";
 		} catch(Exception e) {
 			Pattern compile = Pattern.compile("message\":\"(.*)\",");
@@ -66,29 +67,17 @@ public class TasksController {
 	@GetMapping("delete/{id}")
 	public String delete(@PathVariable Long id, Model model) {
 		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.delete(getBackendURL() + "/todo/" + id);			
+		restTemplate.delete(getBackendURL() + "/tasks-backend/todo/" + id);			
 		model.addAttribute("success", "Success!");
 		model.addAttribute("todos", getTodos());
 		return "index";
 	}
-	
-	@GetMapping("edit/{id}")
-	public String edit(@PathVariable Long id, Model model) {
-		RestTemplate restTemplate = new RestTemplate();
-		Todo todo = restTemplate.getForObject(getBackendURL() + "/todo/" + id, Todo.class);
-		if(todo == null) {
-			model.addAttribute("error", "Invalid Task");
-			model.addAttribute("todos", getTodos());
-			return "index";
-		}
-		model.addAttribute("todo", todo);
-		return "add";
-	}
+
 	
 	@SuppressWarnings("unchecked")
 	private List<Todo> getTodos() {
 		RestTemplate restTemplate = new RestTemplate();
 		return restTemplate.getForObject(
-				getBackendURL() + "/todo", List.class);
+				getBackendURL() + "/tasks-backend/todo", List.class);
 	}
 }
